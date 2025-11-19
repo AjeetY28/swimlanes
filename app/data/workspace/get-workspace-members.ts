@@ -1,9 +1,14 @@
 import { db } from "@/lib/db";
 import { userRequired } from "../user/is-user-authenticated";
+import { redirect } from "next/navigation";
 
 export const getWorkspaceMembers = async (workspaceId: string) => {
   try {
     const { user } = await userRequired();
+
+    if (!user) {
+      redirect("/login");
+    }
 
     const isUserMember = await db.workspaceMember.findUnique({
       where: {
