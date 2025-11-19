@@ -5,13 +5,24 @@ import { userRequired } from "../data/user/is-user-authenticated";
 import { workspaceSchema } from "@/lib/schema";
 import { db } from "@/lib/db";
 import { generateInviteCode } from "@/utils/get-invite-code";
-import { redirect, RedirectType } from "next/navigation";
+import { redirect } from "next/navigation";
 import { $Enums, AccessLevel } from "@prisma/client";
-import { truncateSync } from "fs";
+
+// 🔐 Helper: har jagah same logic repeat na ho
+const getRequiredUser = async () => {
+  const { user } = await userRequired();
+
+  if (!user) {
+    // user nahi mila to login pe bhej do (ya jo bhi route tum use karte ho)
+    redirect("/login");
+  }
+
+  return user;
+};
 
 export const createNewWorkspace = async (data: CreateWorkspaceDataType) => {
   try {
-    const { user } = await userRequired();
+    const user = await getRequiredUser();
 
     const validatedData = workspaceSchema.parse(data);
 
@@ -45,7 +56,7 @@ export const updateWorkspace = async (
   workspaceId: string,
   data: CreateWorkspaceDataType
 ) => {
-  const { user } = await userRequired();
+  const user = await getRequiredUser();
 
   const validatedData = workspaceSchema.parse(data);
 
@@ -74,7 +85,7 @@ export const updateWorkspace = async (
 };
 
 export const resetWorkspaceInviteCode = async (workspaceId: string) => {
-  const { user } = await userRequired();
+  const user = await getRequiredUser();
 
   const isUserAMember = await db.workspaceMember.findUnique({
     where: {
@@ -96,8 +107,9 @@ export const resetWorkspaceInviteCode = async (workspaceId: string) => {
     },
   });
 };
+
 export const deleteWorkspace = async (workspaceId: string) => {
-  const { user } = await userRequired();
+  const user = await getRequiredUser();
 
   const isUserAMember = await db.workspaceMember.findUnique({
     where: {
@@ -127,7 +139,7 @@ export const removeUserFromWorkspace = async (
   workspaceId: string,
   workspaceMemberId: string
 ) => {
-  const { user } = await userRequired();
+  const user = await getRequiredUser();
 
   const isUserAMember = await db.workspaceMember.findUnique({
     where: {
@@ -169,7 +181,7 @@ export const updateUserAccessLevel = async (
   workspaceMemberId: string,
   accessLevel: $Enums.AccessLevel
 ) => {
-  const { user } = await userRequired();
+  const user = await getRequiredUser();
 
   const isUserAMember = await db.workspaceMember.findUnique({
     where: {
@@ -201,7 +213,7 @@ export const updateProjectAccess = async (
   workspaceMemberId: string,
   projectIds: string[]
 ) => {
-  const { user } = await userRequired();
+  const user = await getRequiredUser();
 
   const isUserAMember = await db.workspaceMember.findUnique({
     where: {
