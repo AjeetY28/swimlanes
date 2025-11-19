@@ -10,7 +10,7 @@ import {
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { Plus, Wrench } from "lucide-react";
 import { WorkspaceSelector } from "./workspace-selector";
 import { NavMain } from "./nav-main";
 import { NavProjects } from "./nav-project-list";
@@ -30,14 +30,10 @@ export const AppSidebar = ({
     <>
       <Sidebar collapsible="icon">
         <SidebarHeader className="bg-background">
-          <div className="flex items-center">
-            <Avatar>
-              <AvatarImage src={"/wrench.svg"} />
-            </Avatar>
-            <SidebarGroupLabel>
-              <span className="text-xl font-bold">DailyTM</span>
-            </SidebarGroupLabel>
-          </div>
+          <div className="flex items-center gap-2">
+              <Wrench className="h-6 w-6" />
+              <span className="text-xl font-bold">Aivox</span>
+            </div>
 
           <div className="flex justify-between mb-0">
             <SidebarGroupLabel className="mb-2 text-sm font-semibold text-muted-foreground uppercase">
