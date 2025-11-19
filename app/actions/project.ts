@@ -8,6 +8,10 @@ import { userRequired } from "../data/user/is-user-authenticated";
 export const createNewProject = async (data: ProjectDataTye) => {
   const { user } = await userRequired();
 
+  if (!user) {
+    throw new Error("Not authenticated");
+  }
+
   const workspace = await db.workspace.findUnique({
     where: { id: data?.workspaceId },
     include: {
@@ -69,6 +73,10 @@ export const postComment = async (
   content: string
 ) => {
   const { user } = await userRequired();
+
+  if (!user) {
+    throw new Error("Not authenticated");
+  }
 
   const isMember = await db.workspaceMember.findUnique({
     where: {
