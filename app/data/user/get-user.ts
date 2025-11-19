@@ -1,10 +1,12 @@
 import { db } from "@/lib/db";
 import { userRequired } from "./is-user-authenticated";
-
+import { redirect } from "next/navigation";
 export const getUserById = async () => {
   try {
     const { user } = await userRequired();
-
+if (!user) {
+      redirect("/login");
+    }
     const data = await db.user.findUnique({
       where: { id: user.id },
     });

@@ -1,14 +1,16 @@
 import { db } from "@/lib/db";
 import { userRequired } from "../user/is-user-authenticated";
 import { TaskStatus } from "@prisma/client";
-
+import { redirect } from "next/navigation";
 export const getProjectDetails = async (
   workspaceId: string,
   projectId: string
 ) => {
   try {
     const { user } = await userRequired();
-
+    if (!user) {
+      redirect("/login");
+    }
     const [isUserMember, totalWorkspaceMembers] = await Promise.all([
       db.workspaceMember.findUnique({
         where: {
