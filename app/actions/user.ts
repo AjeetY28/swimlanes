@@ -7,7 +7,13 @@ import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
 
 export const createUser = async (data: UserDataType) => {
-  const { user } = await userRequired();
+  const result = await userRequired();
+  const user = result.user;
+
+  if (!user) {
+    // agar user null hai to login page ya kahin aur redirect kar do
+    redirect("/login"); // ya "/"
+  }
 
   const validatedData = userSchema.parse(data);
 
@@ -40,7 +46,7 @@ export const createUser = async (data: UserDataType) => {
     },
   });
 
-  //   TODO: send user welcome  email
+  // TODO: send user welcome email
 
   if (userData.workspaces.length === 0) {
     redirect("/create-workspace");
